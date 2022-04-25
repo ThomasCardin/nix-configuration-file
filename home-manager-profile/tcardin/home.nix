@@ -31,6 +31,7 @@
     docker docker-compose
     protoc-gen-go
     awscli2 terraform
+    polybar flameshot
   ];
   
   # Programs
