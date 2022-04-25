@@ -16,7 +16,7 @@
 
   networking.hostName = "nixos"; # Define your hostname.
   networking.wireless.enable = false;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true; # Using the networkmanager 
+  networking.networkmanager.enable = true;
 
   # Set your time zone.
   time.timeZone = "America/Montreal";
@@ -25,8 +25,7 @@
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking.useDHCP = false;
-  networking.interfaces.enp2s0.useDHCP = true;
-  networking.interfaces.wlp4s0.useDHCP = true;
+  networking.interfaces.enp5s0.useDHCP = true;
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -41,14 +40,23 @@
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
+  
+  # Docker
+  virtualisation.docker.enable = true;
+
+  # Sets default shell
+  users.defaultUserShell = pkgs.zsh;
+
+  # Razer device configuration
+  hardware.openrazer.enable = true;
 
   # Enable the Plasma 5 Desktop Environment.
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
   hardware.nvidia.modesetting.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
-  
-  # Allow unfree 
+  services.xserver.videoDrivers = [ "nvidia" ];  
+
+  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   # Configure keymap in X11
@@ -57,31 +65,108 @@
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
+  
+  # Create database
+  services.postgresql = {
+    enable = true;
+    package = pkgs.postgresql_10;
+    enableTCPIP = true;
+    authentication = pkgs.lib.mkOverride 10 ''
+      local all all trust
+      host all all ::1/128 trust
+    '';
+  };  
 
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
-  services.xserver.libinput.enable = true;
+  # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.tcardin = {
       isNormalUser = true;
       initialPassword = "qwerty123";
-      extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+      extraGroups = [ "wheel" "plugdev" "openrazer" "docker"]; # Enable ‘sudo’ for the user.
   };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-      wget
-      vim
-      firefox
-      discord
-      vscode
-      gimp
-      dropbox-cli
+     wget 
+     vim
+     chromium
+     discord
+     spotify
+     gimp
+     dropbox-cli
+     vscode
+     openrazer-daemon razergenie
+     dbeaver postman
+     
+ 
+     (vscode-with-extensions.override {
+       vscodeExtensions = with vscode-extensions; [
+           bbenoist.nix
+           ms-vsliveshare.vsliveshare
+      ] ++ vscode-utils.extensionsFromVscodeMarketplace [
+         {
+           name = "code-runner";
+           publisher = "formulahendry";
+           version = "0.6.33";
+           sha256 = "166ia73vrcl5c9hm4q1a73qdn56m0jc7flfsk5p5q41na9f10lb0";
+         }
+	 {
+    	    name = "theme-dracula";
+    	    publisher = "dracula-theme";
+            version = "2.24.1";
+	    sha256 = "1lg038s2y3vygwcs47y37gp9dxd8zfvy6yfxi85zzl0lf8iynl1b";
+	  }
+	  {
+	    name = "go";
+	    publisher = "golang";
+	    version = "0.31.1";
+	    sha256 = "1x25x2dxcmi7h1q19qjxgnvdfzhsicq6sf6qig8jc0wg98g0gxry";
+	  }
+	  {
+	    name = "protobuf";
+	    publisher = "kangping";
+	    version = "1.1.6";
+	    sha256 = "0alhzr1amx3clz9vr2hqrkpd1wnvwb59rhzb4lipsqlnsjsmaz7r";
+	  }
+	  {
+	    name = "python";
+	    publisher = "ms-python";
+	    version = "2022.3.10661003";
+	    sha256 = "1h0d5p5p04r3k3s47n6b7m7y551prmg9021s1vv0jniv5q2b580r";
+	  }
+	  {
+	    name = "vscode-pylance";
+	    publisher = "ms-python";
+	    version = "2022.3.0";
+	    sha256 = "1s4cyrzqpb4ijwj942dqd86pcxwxdhshx80r2z80mc3q0l6gkhcd";
+	  }
+	  {
+	    name = "jupyter";
+	    publisher = "ms-toolsai";
+	    version = "2022.3.1000690154";
+	    sha256 = "14wj853dcxici5hav7pf93fdsvr1qfg4s9nqpbxp3qp9aj8ayqya";
+	  }
+	  {
+	    name = "cargo";
+	    publisher = "panicbit";
+	    version = "0.2.3";
+	    sha256 = "0idcbri4kpva0yxni0ql6l14knc3h6izxza5d49jidrh9xj0njh7";
+	  }
+	  {
+	    name = "rust";
+	    publisher = "rust-lang";
+	    version = "0.7.8";
+	    sha256 = "039ns854v1k4jb9xqknrjkj8lf62nfcpfn0716ancmjc4f0xlzb3";
+	   }
+       ];
+     })
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -110,5 +195,6 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "21.11"; # Did you read the comment?
+
 }
 
