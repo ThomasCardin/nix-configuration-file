@@ -21,25 +21,78 @@
 
   # Default packages
   home.packages = with pkgs; [
-    kitty
-    alacritty
-    python38
-    git
-    git-crypt
-    go
-    rustc
-    neofetch
-    wine
+    kitty alacritty
+    git git-crypt
+    rustc cargo python38 mockgen pipenv protobuf nodejs
+    neofetch htop gnumake
+    cmake gcc binutils unzip
+    openssl gnome.zenity
+    obs-studio
+    docker docker-compose
+    protoc-gen-go
+    awscli2 terraform
   ];
+  
+  # Programs
+  programs.zsh = {
+    enable = true;
+    shellAliases = {
+      ll = "ls -l";
+      update-nixos = "sudo nixos-rebuild switch";
+      update-home = "home-manager switch";
+      cdhome = "cd /home/tcardin";
+    };
+    history = {
+      size = 10000;
+      path = "${config.xdg.dataHome}/zsh/history";
+    };
+    oh-my-zsh = {
+      enable = true;
+      plugins = [ "git" "thefuck" "web-search"];
+      theme = "aussiegeek";
+    };
+    plugins = [
+      {
+        # will source zsh-autosuggestions.plugin.zsh
+        name = "zsh-autosuggestions";
+        src = pkgs.fetchFromGitHub {
+          owner = "zsh-users";
+          repo = "zsh-autosuggestions";
+          rev = "v0.4.0";
+          sha256 = "0z6i9wjjklb4lvr7zjhbphibsyx51psv50gm07mbb0kj9058j6kc";
+        };
+      }
+      {
+        name = "enhancd";
+        file = "init.sh";
+        src = pkgs.fetchFromGitHub {
+          owner = "b4b4r07";
+          repo = "enhancd";
+          rev = "v2.2.1";
+          sha256 = "0iqa9j09fwm6nj5rpip87x3hnvbbz9w9ajgm6wkrd5fls8fn8i5g";
+        };
+      }
+      {
+        name = "zsh-nix-shell";
+        file = "nix-shell.plugin.zsh";
+        src = pkgs.fetchFromGitHub {
+          owner = "chisui";
+          repo = "zsh-nix-shell";
+          rev = "v0.4.0";
+          sha256 = "037wz9fqmx0ngcwl9az55fgkipb745rymznxnssr3rx9irb6apzg";
+        };
+      }
+    ];
+  };
 
-  # Config file
+  # Config file home manager
   home.file = {
     # KITTY CONFIG
     ".config/kitty/kitty.conf".text= ''
 		font_family 	 Ubuntu
 		bold_font 	     auto
 		italic_font 	 auto
-		bold_italic_font auto
+        bold_italic_font auto
 		font_size 12
 	
 		cursor_text_color #111111
@@ -67,12 +120,14 @@
 		window_padding_width 10
 		hide_window_decorations yes
 
-		background_opacity 0.8
-		dim_opacity 0.75
+    	dim_opacity 0.75
+
+        enabled_layouts tall:bias=50;full_size=1;mirrored=false
 	'';
     
     # VIM config file
     ".vimrc".text = ''
+        syntax on
     	set tabstop=4 softtabstop=4
         set shiftwidth=4
         set expandtab
@@ -90,13 +145,17 @@
         set termguicolors
         set scrolloff=8
         set signcolumn=yes
-
+        
         " https://github.com/junegunn/vim-plug
         call plug#begin('~/.vim/plugged')
 
         " FZF
         Plug 'junegunn/fzf.vim'
         Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+        
+        " Autocomplete
+        Plug 'rust-lang/rust.vim'
+        let g:rustfmt_autosave = 1
 
         " THEME
         Plug 'dracula/vim'
@@ -104,22 +163,26 @@
         " Disable HJKL and Arrow Keys
         Plug 'wikitopian/hardmode'
         call plug#end()
-
+        
+        set background=dark        
         colorscheme dracula
-
-        set background=dark
+        
+        # Work around using a vim background 
+        set t_ut=
 
         " hjkl also off
-        "autocmd VimEnter,BufNewFile,BufReadPost * silent! call HardMode()
+        " autocmd VimEnter,BufNewFile,BufReadPost * silent! call HardMode()
         noremap <Up> <Nop>
         noremap <Down> <Nop>
         noremap <Left> <Nop>
         noremap <Right> <Nop>
 
     '';
- 
+
     # ALACRITTY CONFIG
     ".config/alacritty/alacritty.yml".text = ''
+        env:
+            TERM: xterm-256color
         # Window configuration
         window:
             dimensions:
@@ -202,5 +265,6 @@
     '';
   };
 }
+
 
 
