@@ -41,8 +41,10 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
   
-  # Docker
+  # Virtualisation
   virtualisation.docker.enable = true;
+  virtualisation.virtualbox.host.enable = true;
+  virtualisation.virtualbox.host.enableExtensionPack = true;
 
   # Sets default shell
   users.defaultUserShell = pkgs.zsh;
@@ -88,7 +90,7 @@
   users.users.tcardin = {
       isNormalUser = true;
       initialPassword = "qwerty123";
-      extraGroups = [ "wheel" "plugdev" "openrazer" "docker"]; # Enable ‘sudo’ for the user.
+      extraGroups = [ "wheel" "plugdev" "openrazer" "docker" "vboxusers"]; # Enable ‘sudo’ for the user.
   };
 
   # List packages installed in system profile. To search, run:
@@ -105,7 +107,6 @@
      openrazer-daemon razergenie
      dbeaver postman
      
- 
      (vscode-with-extensions.override {
        vscodeExtensions = with vscode-extensions; [
            bbenoist.nix

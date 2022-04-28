@@ -23,7 +23,7 @@
   home.packages = with pkgs; [
     kitty alacritty
     git git-crypt
-    rustc cargo python38 mockgen pipenv protobuf nodejs
+    rustc cargo python38 mockgen pipenv protobuf nodejs go
     neofetch htop gnumake
     cmake gcc binutils unzip
     openssl gnome.zenity
@@ -31,7 +31,7 @@
     docker docker-compose
     protoc-gen-go
     awscli2 terraform
-    polybar flameshot
+    polybar flameshot lsof zip
   ];
   
   # Programs
