@@ -52,11 +52,18 @@
   # Razer device configuration
   hardware.openrazer.enable = true;
 
-  # Enable the Plasma 5 Desktop Environment.
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
+  # Plasma
+  #services.xserver.displayManager.sddm.enable = true;
+  #services.xserver.desktopManager.plasma5.enable = true;
+  
+  # NVIDIA
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.beta; # for GNOME
   hardware.nvidia.modesetting.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];  
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  # Gnome
+  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -106,6 +113,8 @@
      vscode
      openrazer-daemon razergenie
      dbeaver postman
+     libreoffice
+     openconnect
      
      (vscode-with-extensions.override {
        vscodeExtensions = with vscode-extensions; [
