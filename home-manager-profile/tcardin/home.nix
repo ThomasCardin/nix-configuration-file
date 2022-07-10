@@ -24,14 +24,16 @@
     kitty alacritty
     git git-crypt
     rustc cargo python38 mockgen pipenv protobuf nodejs go
-    neofetch htop gnumake
+    neofetch htop gnumake xorg.xhost
     cmake gcc binutils unzip
     openssl gnome.zenity
     obs-studio
     docker docker-compose
     protoc-gen-go
     awscli2 terraform
-    polybar flameshot lsof zip
+    polybar flameshot lsof zip tree
+    jdk8 maven
+    cmatrix asciiquarium
   ];
   
   # Programs
@@ -49,7 +51,6 @@
     };
     oh-my-zsh = {
       enable = true;
-      plugins = [ "git" "thefuck" "web-search"];
       theme = "aussiegeek";
     };
     plugins = [

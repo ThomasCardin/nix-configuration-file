@@ -51,14 +51,18 @@
 
   # Razer device configuration
   hardware.openrazer.enable = true;
+  
+  # RDP
+  services.gnome.gnome-remote-desktop.enable = true;  
 
   # Plasma
   #services.xserver.displayManager.sddm.enable = true;
   #services.xserver.desktopManager.plasma5.enable = true;
   
   # NVIDIA
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.beta; # for GNOME
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable; # for GNOME
   hardware.nvidia.modesetting.enable = true;
+  hardware.opengl.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
 
   # Gnome
@@ -110,11 +114,13 @@
      spotify
      gimp
      dropbox-cli
-     vscode
+     vscode jetbrains.idea-community
      openrazer-daemon razergenie
      dbeaver postman
      libreoffice
      openconnect
+     lutris wine
+     zoom-us
      
      (vscode-with-extensions.override {
        vscodeExtensions = with vscode-extensions; [
